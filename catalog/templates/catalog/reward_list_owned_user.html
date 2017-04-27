@@ -1,0 +1,25 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>My Rewards</h1>
+
+    {% if reward_list %}
+    <ul>
+
+      {% for reward in reward_list %} 
+<!--       class="{% if bookinst.is_overdue %}text-danger{% endif %}"
+ -->      <li >
+      <a href="{% url 'reward-detail' reward.pk %}">Reward ID:{{reward.id}}</a>
+     <br>  Received Date:{{ reward.date }}
+     <br>   Due Date:{{ reward.due_date }}   
+      <br>  Status:{{ reward.status }} 
+      </li>
+
+
+
+      {% endfor %}
+    </ul>
+    {% else %}
+      <p>You have no rewards.</p>
+    {% endif %}       
+{% endblock %}

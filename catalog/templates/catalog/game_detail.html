@@ -1,0 +1,48 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Name: {{ game.name }}</h1>
+
+
+  <p><strong>Descirption:</strong> {{ game.description }}</p>
+    <p><strong>Platform:</strong> {{ game.platform }}</p>  
+  <p><strong>Price:</strong> {{ game.price }}</p>  
+
+  <p><strong>Genre:</strong> 
+
+  {% for genre in game.genre.all %} 
+  {{ genre }}
+  {% if not forloop.last %},
+   {% endif %}
+   {% endfor %}</p>  
+
+ <div style="margin-left:20px;margin-top:20px">
+    <h4>Its tages</h4>
+
+    {% for t in game.tag_set.all %}
+
+    <hr>
+<!--     <p class="{% if copy.status == 'a' %}text-success{% elif copy.status == 'd' %}text-danger{% else %}text-warning{% endif %}">{{ copy.get_status_display }}</p>
+    {% if copy.status != 'a' %}<p><strong>Due to be returned:</strong> {{copy.due_back}}</p>{% endif %}
+    <p><strong>Imprint:</strong> {{copy.imprint}}</p> -->
+    <p class="text-muted"><strong>Tag:</strong> #{{t.name}}</p>
+
+    {% endfor %}
+  </div>
+
+
+
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Sold in Transactions</h4>
+
+    {% for t in game.transaction_set.all %}
+
+    <hr>
+<!--     <p class="{% if copy.status == 'a' %}text-success{% elif copy.status == 'd' %}text-danger{% else %}text-warning{% endif %}">{{ copy.get_status_display }}</p>
+    {% if copy.status != 'a' %}<p><strong>Due to be returned:</strong> {{copy.due_back}}</p>{% endif %}
+    <p><strong>Imprint:</strong> {{copy.imprint}}</p> -->
+    <p class="text-muted"><strong>Id:</strong> #{{t.id}}</p>
+
+    {% endfor %}
+  </div>
+{% endblock %}

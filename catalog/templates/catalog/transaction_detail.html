@@ -1,0 +1,20 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <!-- <h1>Author: {{ author.first_name }}, {{ author.last_name }}</h1>
+ -->
+  <!-- <p><strong>Author:</strong> <a href="">{{ book.author }}</a></p> <!-- author detail link not yet defined --> 
+  <p><strong>Transaction:</strong> {{ transaction.id}} </p>
+ 
+
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Copies</h4>
+
+    {% for game in transaction.game.all %}
+    <hr>
+
+
+    <p class="text-muted"><strong>GameId:</strong> {{game.id}}</p>
+    {% endfor %}
+  </div>
+{% endblock %}

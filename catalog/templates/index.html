@@ -1,0 +1,33 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<h1>Welcome to <em>Game Market</em></h1>
+
+
+
+<p>The Game Market has the following record counts:</p>
+<ul>
+	<li><strong>Genres:</strong> {{ num_genres }}</li>
+	<li><strong>Game:</strong> {{ num_games }}</li>
+	<li><strong>Tags:</strong> {{ num_tags }}</li>
+	{% if user.is_authenticated %}
+<!-- 	<li><strong>Login Times:</strong> {{ num_visits }}</li>
+ -->	<li><strong>Accumulated Amount:</strong> {{ 	accumulated_amount }}</li>
+
+	<li><strong>RECOMMENDATION:</strong> </li>
+	{% for game in games_rcmd.all %}
+	<li> <a href="{{ game.get_absolute_url }}">{{ game.name }}</a> </li>
+
+
+	{% endfor %}
+
+	{% endif %} 
+
+</ul>
+
+<!-- <p>You have visited this page {{ num_visits }}{% if num_visits == 1 %} time{% else %} times{% endif %}.</p> -->
+
+{% endblock %}
+
+

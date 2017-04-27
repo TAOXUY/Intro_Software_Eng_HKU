@@ -1,0 +1,26 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Transaction Records</h1>
+
+    {% if transaction_list %}
+    <ul>
+
+      {% for transaction in transaction_list %} 
+<!--       class="{% if bookinst.is_overdue %}text-danger{% endif %}"
+ -->     
+ Transaction ID:{{transaction.id}} Orign Price: {{transaction.display_origin_price }} Trading Price: {{transaction.display_trading_price}}
+
+      {% for game in transaction.game.all %} 
+  <li >
+      <a href="{% url 'game-detail' game.pk %}">{{game.name}}</a> 
+      </li>
+
+      {% endfor %}
+      {% endfor %}
+    </ul>
+
+    {% else %}
+      <p>There are no games bought.</p>
+    {% endif %}       
+{% endblock %}

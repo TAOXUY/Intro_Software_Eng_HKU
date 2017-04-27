@@ -1,0 +1,14 @@
+{% extends "base_generic.html" %}
+{% block content %}
+  <!-- <h1>Author: {{ author.first_name }}, {{ author.last_name }}</h1>
+ -->
+  <!-- <p><strong>Author:</strong> <a href="">{{ book.author }}</a></p> <!-- author detail link not yet defined --> 
+    {% if user.is_authenticated %}
+
+
+  <p><strong>First Name:</strong> {{first_name}} </p>
+   <p><strong>Last Name:</strong> {{last_name}} </p>
+     <p><strong>E-Mail:</strong> {{email}} </p>
+<!--  'username', 'first_name', 'last_name', 'email' -->
+  {% endif %} 
+{% endblock %}

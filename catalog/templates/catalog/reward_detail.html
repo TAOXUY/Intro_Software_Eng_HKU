@@ -1,0 +1,27 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>ID: {{ reward.id }}</h1>
+
+ 
+
+  <p><strong>Reward Info:</strong> </p>
+Amount:{{reward.amount}}<br></br>
+Owner:{{reward.owner}}<br></br>
+Status:{{reward.status}}<br></br>
+
+<!--   <div style="margin-left:20px;margin-top:20px">
+    <h4>Copies</h4>
+
+    {% for copy in game.transaction_set.all %}
+
+    <hr>
+    <p class="{% if copy.status == 'a' %}text-success{% elif copy.status == 'd' %}text-danger{% else %}text-warning{% endif %}">{{ copy.get_status_display }}</p>
+    {% if copy.status != 'a' %}<p><strong>Due to be returned:</strong> {{copy.due_back}}</p>{% endif %}
+    <p><strong>Imprint:</strong> {{copy.imprint}}</p>
+    <p class="text-muted"><strong>Id:</strong> {{copy.id}}</p>
+
+
+    {% endfor %}
+  </div> -->
+{% endblock %}

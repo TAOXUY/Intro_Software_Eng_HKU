@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<form action="" method="post">
+    {% csrf_token %}
+
+    <table>
+    <p>You cannot use the rewards more than you have and At most 10 rewards can be used</p>
+    {{ form.as_table }}
+    </table>
+    <input type="submit" value="Submit" />
+    
+</form>
+{% endblock %}

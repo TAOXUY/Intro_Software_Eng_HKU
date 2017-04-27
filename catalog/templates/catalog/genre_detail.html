@@ -1,0 +1,32 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Name: {{ genre.name }}</h1>
+
+ 
+
+  <p><strong>Games in This Type:</strong> 
+
+  {% for g in genre.game_set.all %} 
+      <li>
+        <a href="{{ g.get_absolute_url }}">{{ g.name }}</a> 
+      </li>
+  {% if not forloop.last %},
+   {% endif %}
+   {% endfor %}</p>  
+
+<!--   <div style="margin-left:20px;margin-top:20px">
+    <h4>Copies</h4>
+
+    {% for copy in game.transaction_set.all %}
+
+    <hr>
+    <p class="{% if copy.status == 'a' %}text-success{% elif copy.status == 'd' %}text-danger{% else %}text-warning{% endif %}">{{ copy.get_status_display }}</p>
+    {% if copy.status != 'a' %}<p><strong>Due to be returned:</strong> {{copy.due_back}}</p>{% endif %}
+    <p><strong>Imprint:</strong> {{copy.imprint}}</p>
+    <p class="text-muted"><strong>Id:</strong> {{copy.id}}</p>
+
+
+    {% endfor %}
+  </div> -->
+{% endblock %}
