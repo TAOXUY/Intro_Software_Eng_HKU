@@ -77,11 +77,7 @@ class Tag(models.Model):
     def display_game(self):
         return ', '.join([ game.name for game in self.game.all()[:10] ])
         display_game.short_description = 'Game'     
-    @staticmethod 
-    def check_unique(name):
-        if Tag.objects.filter(name=name).count()>0:
-            return False
-        return True
+
 
 
 class Transaction(models.Model):
@@ -101,7 +97,7 @@ class Transaction(models.Model):
     def display_origin_price(self):
         return round(sum([game.price for game in self.game.all()]),3)
     def display_trading_price(self):
-        return round(sum([game.price for game in self.game.all()])*decimal.Decimal(1-0.2*self.reward_set.count()),3)
+        return round(sum([game.price for game in self.game.all()])*decimal.Decimal(1-0.1*self.reward_set.count()),3)
 
 class Reward(models.Model):
     date=models.DateField( default=datetime.date.today)

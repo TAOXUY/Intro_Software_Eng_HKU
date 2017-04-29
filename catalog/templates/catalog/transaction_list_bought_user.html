@@ -5,11 +5,19 @@
 
     {% if transaction_list %}
     <ul>
-
+<script>
+  var index = 1;
+</script>
       {% for transaction in transaction_list %} 
 <!--       class="{% if bookinst.is_overdue %}text-danger{% endif %}"
  -->     
- Transaction ID:{{transaction.id}} Orign Price: {{transaction.display_origin_price }} Trading Price: {{transaction.display_trading_price}}
+No <script>
+  document.write(index);
+</script>. Transaction
+<script>
+  index = index+1;
+</script>
+ Orign Price: {{transaction.display_origin_price }} Trading Price: {{transaction.display_trading_price}}
 
       {% for game in transaction.game.all %} 
   <li >

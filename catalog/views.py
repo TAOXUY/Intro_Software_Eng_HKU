@@ -271,7 +271,6 @@ class TagSingleCreate(LoginRequiredMixin,CreateView):
     model = Tag
     form_class = TagSingleForm
     def form_valid(self, form):
-        # if not Tag.check_unique(form.instance.name):
         if Tag.objects.filter(name__iexact=form.instance.name, game__id = self.kwargs['id']).count()>0:
             raise ValidationError("This tag has been Created")
             return self.form_invalid(form)
@@ -282,7 +281,8 @@ class TagSingleCreate(LoginRequiredMixin,CreateView):
         return super(TagSingleCreate, self).form_valid(form)
     def get_success_url(self):
         tags=Tag.objects.filter(id=self.object.id)
-        tags[0].game=Game.objects.filter(id=self.kwargs['id'])
+        tags[0].game=Game.objects.filter(tag__name=self.object.name)|Game.objects.filter(id=self.kwargs['id'])
+        Tag.objects.filter(name=self.object.name).exclude(id=self.object.id,).delete()
         return reverse('index')
 
 class ReviewCreate(LoginRequiredMixin,CreateView):
@@ -296,8 +296,6 @@ class ReviewCreate(LoginRequiredMixin,CreateView):
         return super(ReviewCreate, self).form_valid(form)
     def get_success_url(self):
         rev=Review.objects.filter(id=self.object.id)
-        print self.kwargs['id']
-        print Game.objects.filter(id=self.kwargs['id'])[0].name
         rev[0].game=Game.objects.filter(id=self.kwargs['id'])[0]
         return reverse('index')
 

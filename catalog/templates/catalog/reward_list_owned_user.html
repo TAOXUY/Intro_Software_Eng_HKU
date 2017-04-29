@@ -6,10 +6,18 @@
     {% if reward_list %}
     <ul>
 
+<script>
+  index = 1;
+</script>
       {% for reward in reward_list %} 
 <!--       class="{% if bookinst.is_overdue %}text-danger{% endif %}"
  -->      <li >
-      <a href="{% url 'reward-detail' reward.pk %}">Reward ID:{{reward.id}}</a>
+No <script>
+  document.write(index);
+</script>.
+<script>
+  index = index+1;
+</script>Reward
      <br>  Received Date:{{ reward.date }}
      <br>   Due Date:{{ reward.due_date }}   
       <br>  Status:{{ reward.status }} 

@@ -48,17 +48,15 @@
 <!-- <li><a href="{{ game.get_addReview_url }}">Add Review</a> -->
 {% endif %}     
 
-  <div style="margin-left:20px;margin-top:20px">
+<!--   <div style="margin-left:20px;margin-top:20px">
     <h4>Sold in Transactions</h4>
 
     {% for t in game.transaction_set.all %}
 
     <hr>
-<!--     <p class="{% if copy.status == 'a' %}text-success{% elif copy.status == 'd' %}text-danger{% else %}text-warning{% endif %}">{{ copy.get_status_display }}</p>
-    {% if copy.status != 'a' %}<p><strong>Due to be returned:</strong> {{copy.due_back}}</p>{% endif %}
-    <p><strong>Imprint:</strong> {{copy.imprint}}</p> -->
+
     <p class="text-muted"><strong>Id:</strong> #{{t.id}}</p>
 
     {% endfor %}
-  </div>
+  </div> -->
 {% endblock %}
