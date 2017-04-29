@@ -36,6 +36,7 @@ class Game(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(max_length=1000, help_text="Enter a brief description of the game")
     price= models.DecimalField(max_digits=5, decimal_places=2)
+    picture = models.FileField(upload_to='gamePicture/')
     featured=models.BooleanField(default=False)
     def __str__(self):
         return self.name    
@@ -63,6 +64,12 @@ class Tag(models.Model):
     def display_game(self):
         return ', '.join([ game.name for game in self.game.all()[:10] ])
         display_game.short_description = 'Game'     
+    @staticmethod 
+    def check_unique(name):
+        if Tag.objects.filter(name=name).count()>0:
+            return False
+        return True
+
 
 class Transaction(models.Model):
     game = models.ManyToManyField(Game, help_text="Select the games to be bought")
@@ -127,5 +134,9 @@ class Reward(models.Model):
             gift = Reward( owner=user)
             gift.save()
 
+class Document(models.Model):
+    description = models.CharField(max_length=255, blank=True)
+    document = models.FileField(upload_to='documents/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
 
 

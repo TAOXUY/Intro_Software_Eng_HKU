@@ -25,7 +25,8 @@
 <br></br>
 <li><strong>FEATURED GAMES:</strong> </li>
 {% for fg in featured_games.all %} 
-<strong>Game Image:{{fg.name}}</strong> <br></br>
+
+<strong>Game Image:<img src="{{ fg.picture.url }}"/></strong> <br></br>
 <strong>Game Title:{{fg.name}}</strong> <br></br>
 <strong>Game Description:{{fg.description}}</strong> <br></br>
 <p> <strong> Game Platform:{% for p in fg.platform.all %} 

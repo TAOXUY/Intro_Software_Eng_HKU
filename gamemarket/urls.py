@@ -7,6 +7,12 @@ from django.conf.urls.static import static
 from catalog import views as views
 from django.contrib.auth import views as auth_views
 
+from django.conf import settings
+from django.conf.urls.static import static
+
+
+
+
 
 
 urlpatterns = [
@@ -49,3 +55,7 @@ urlpatterns += [
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = 'index'
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

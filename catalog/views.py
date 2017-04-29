@@ -4,10 +4,10 @@ from django.shortcuts import render
 import uuid
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic
-from .models import Genre,Game,Transaction, Tag, Reward
+from .models import Genre,Game,Transaction, Tag, Reward,Document
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
-from .forms import SignUpForm, EditProfileForm, TransactionForm,RewardFormSet ,RewardForm
+from .forms import SignUpForm, EditProfileForm, TransactionForm,RewardFormSet ,RewardForm,DocumentForm,TagForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render,redirect
@@ -20,8 +20,23 @@ from django.http import HttpResponseRedirect
 from django.utils.functional import curry
 from django.views.generic import TemplateView
 from django.forms.models import inlineformset_factory
+from django.core.exceptions import ValidationError
 
+def display_document(request, id):
+    image = Document.objects.get(id=id)
+    return render(request, 'catalog/display_document.html', {'image': image})
 
+def model_form_upload(request):
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = DocumentForm()
+    return render(request, 'catalog/model_form_upload.html', {
+        'form': form
+    })
 
 def profile(request):
     if request.user.is_authenticated():
@@ -106,10 +121,10 @@ def index(request):
             }
             )
     return render(
-        	request,
-        	'index.html',
-        	context={'num_genres':num_genres, 'num_games':num_games,'num_tags':num_tags}
-        	)
+            request,
+            'index.html',
+            context={'num_genres':num_genres, 'num_games':num_games,'num_tags':num_tags}
+            )
 
 class GenreListView(generic.ListView):
     model = Genre
@@ -197,6 +212,7 @@ class TransactionCreate(CreateView):
         form.instance.buyer = self.request.user
         num=form.instance.num_reward
         if num <0 or num >10 or  not Reward.check_num(self.request.user,num):
+            raise ValidationError("Error in reward number")
             return self.form_invalid(form)
         return super(TransactionCreate, self).form_valid(form)
     def get_success_url(self):
@@ -215,10 +231,17 @@ class TransactionDelete(DeleteView):
 
 class TagCreate(CreateView):
     model = Tag
-    fields = ['name','game']
+    form_class = TagForm
     def form_valid(self, form):
+        if not Tag.check_unique(form.instance.name):
+            raise ValidationError("This tag has been Created")
+            return self.form_invalid(form)
         form.instance.owner = self.request.user
         return super(TagCreate, self).form_valid(form)
+    def get_form_kwargs(self, *args, **kwargs):
+        form_kwargs = super(TagCreate, self).get_form_kwargs(*args, **kwargs)
+        form_kwargs['owner'] = self.request.user
+        return form_kwargs
 
 class TagUpdate(UpdateView):
     model = Tag

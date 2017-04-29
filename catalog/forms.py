@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from .models import Transaction, Reward
+from .models import Transaction, Reward,Document,Tag,Game
 from django.forms.models import inlineformset_factory
 from django.core.validators import MaxValueValidator
 
@@ -23,6 +23,12 @@ class EditProfileForm(forms.Form):
         fields = ('first_name', 'last_name', 'email' )
 
 
+
+class DocumentForm(forms.ModelForm):
+    class Meta:
+        model = Document
+        fields = ('description', 'document', )
+
 class TransactionForm(ModelForm):
     class Meta:
         model = Transaction
@@ -40,6 +46,15 @@ class TransactionForm(ModelForm):
     # class Meta:
     #     model = Transaction
     #     fields = ('game', 'reward_set' )
+
+class TagForm(ModelForm):
+    class Meta:
+        model = Tag
+        fields = ('name','game',)
+    def __init__(self, *args, **kwargs):
+        buyer = kwargs.pop('owner')
+        super(TagForm, self).__init__(*args, **kwargs)
+        self.fields["game"].queryset = Game.objects.filter(transaction__buyer=buyer).distinct()
 
 class RewardForm(ModelForm):
     class Meta:
