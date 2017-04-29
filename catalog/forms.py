@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from .models import Transaction, Reward,Document,Tag,Game
+from .models import Transaction, Reward,Document,Tag,Game,Review
 from django.forms.models import inlineformset_factory
 from django.core.validators import MaxValueValidator
 
@@ -10,9 +10,10 @@ class SignUpForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
     last_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
     email = forms.EmailField(max_length=254, help_text='Required. Inform a valid email address.')
+    picture = forms.FileField(help_text='Your Icon')
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', )
+        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2','picture' )
 
 class EditProfileForm(forms.Form):
     first_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
@@ -33,19 +34,17 @@ class TransactionForm(ModelForm):
     class Meta:
         model = Transaction
         fields = ('game','num_reward')
+    def __init__(self, *args, **kwargs):
+        buyer = kwargs.pop('owner')
+        super(TransactionForm, self).__init__(*args, **kwargs)
+        self.fields["game"].queryset = Game.objects.all().exclude(transaction__buyer=buyer)
 
-	# first_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
- #    last_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
- #    email = forms.EmailField(max_length=254, help_text='Required. Inform a valid email address.')
-    # def clean_game(self):
-    # 	 data = self.cleaned_data['game']
-    # 	 return data
-    # def clean_reward_set(self):
-    # 	data = self.cleaned_data['reward_set']
-    # 	return data
-    # class Meta:
-    #     model = Transaction
-    #     fields = ('game', 'reward_set' )
+
+class TransactionSingleForm(ModelForm):
+    class Meta:
+        model = Transaction
+        fields = ('num_reward',)
+
 
 class TagForm(ModelForm):
     class Meta:
@@ -55,6 +54,23 @@ class TagForm(ModelForm):
         buyer = kwargs.pop('owner')
         super(TagForm, self).__init__(*args, **kwargs)
         self.fields["game"].queryset = Game.objects.filter(transaction__buyer=buyer).distinct()
+
+class ReviewForm(ModelForm):
+    class Meta:
+        model = Review
+        fields = ('content',)
+    # def __init__(self, *args, **kwargs):
+    #     buyer = kwargs.pop('owner')
+    #     super(TagForm, self).__init__(*args, **kwargs)
+    #     self.fields["game"].queryset = Game.objects.filter(transaction__buyer=buyer).distinct()
+
+class TagSingleForm(ModelForm):
+    class Meta:
+        model = Tag
+        fields = ('name',)
+    # def __init__(self, *args, **kwargs):
+    #     buyer = kwargs.pop('owner')
+    #     super(TagForm, self).__init__(*args, **kwargs)
 
 class RewardForm(ModelForm):
     class Meta:

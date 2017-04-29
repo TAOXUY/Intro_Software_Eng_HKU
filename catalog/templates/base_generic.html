@@ -19,15 +19,15 @@
         <ul class="sidebar-nav">
           <li><a href="{% url 'index' %}">Home</a></li>
           <li><a href="{% url 'games' %}">All games</a></li>
-<!--           <li><a href="{% url 'genres' %}">All genres</a></li>
--->
-<li><a href="{% url 'tags' %}">All tags</a></li>
+           <li><a href="{% url 'genres' %}">Browse by Genre</a></li>
+
+<li><a href="{% url 'tags' %}">Browse by Tags</a></li>
 {% if user.is_authenticated %}
 <li>User: {{ user.get_username }}</li>
 <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>  
 <li><a href="{% url 'profile'%}?next={{request.path}}">My Profile</a></li>  
 <li><a href="{% url 'transaction-create' %}">Buy Games</a>
-  <li><a href="{% url 'tag-create' %}">Add Tags</a>
+<!--   <li><a href="{% url 'tag-create' %}">Create Tags</a> -->
     <li><a href="{% url 'my-bought' %}">My Transactions</a></li>
 <!--     <li><a href="{% url 'my-bought' %}">My Games</a></li> -->
 

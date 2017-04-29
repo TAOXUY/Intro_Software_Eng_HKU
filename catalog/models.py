@@ -22,13 +22,14 @@ class Platform(models.Model):
 class Genre(models.Model):
     name = models.CharField(max_length=200, help_text="Enter a game genre (e.g. War, Sports.)")
     def __str__(self):
-
         return self.name
     def get_absolute_url(self):
         return reverse('genre-detail', args=[str(self.id)])
     def display_game(self):
         return ', '.join([ game.name for game in self.game_set.all()[:10] ])
         display_game.short_description = 'Game'
+
+
 
 class Game(models.Model):
     platform = models.ManyToManyField(Platform, help_text="Select platforms for this game")
@@ -40,6 +41,12 @@ class Game(models.Model):
     featured=models.BooleanField(default=False)
     def __str__(self):
         return self.name    
+    def get_purchase_url(self):
+        return reverse('game-purchase', args=[str(self.id)])
+    def get_addTag_url(self):
+        return reverse('game-addTag', args=[str(self.id)])
+    def get_addReview_url(self):
+        return reverse('game-addReview', args=[str(self.id)])
     def get_absolute_url(self):
         return reverse('game-detail', args=[str(self.id)])
     def display_platform(self):
@@ -48,10 +55,16 @@ class Game(models.Model):
     def display_genre(self):
         return ', '.join([ genre.name for genre in self.genre.all()[:3] ])
         display_genre.short_description = 'Genre'
-
     def display_tag(self):
         return ', '.join([ tag.name for tag in self.tag_set.all()[:3] ])
         display_tag.short_description = 'Tag'
+
+class Review(models.Model):
+    content = models.CharField(max_length=1000)
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    game = models.ForeignKey(Game, on_delete=models.SET_NULL, null=True, blank=True)
+    def __str__(self):
+        return self.id
 
 class Tag(models.Model):
     name = models.CharField(max_length=200, help_text="Enter a game tag(e.g. Excellent, Funny.)")
@@ -78,7 +91,7 @@ class Transaction(models.Model):
     def get_absolute_url(self):
         return reverse('transaction-detail', args=[str(self.id)])
     def __str__(self):
-        return '%s (%s)' % (self.id,self.game.name)
+        return str(self.id)
     def display_game(self):
         return ', '.join([ game.name for game in self.game.all()[:10] ])
         display_game.short_description = 'Game'
@@ -100,7 +113,7 @@ class Reward(models.Model):
         return self.date+datetime.timedelta(days=120)
     def status(self):
         if self.transaction==None:
-            if self.due_date() >self.date:
+            if self.due_date() >datetime.date.today():
                 return 'Valid'
             return 'Unvalid'
         return 'Used'

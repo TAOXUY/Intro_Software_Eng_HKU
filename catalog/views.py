@@ -4,10 +4,10 @@ from django.shortcuts import render
 import uuid
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic
-from .models import Genre,Game,Transaction, Tag, Reward,Document
+from .models import Genre,Game,Transaction, Tag, Reward,Document,Review
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
-from .forms import SignUpForm, EditProfileForm, TransactionForm,RewardFormSet ,RewardForm,DocumentForm,TagForm
+from .forms import SignUpForm, EditProfileForm, TransactionForm,TransactionSingleForm,RewardFormSet ,RewardForm,DocumentForm,TagForm,TagSingleForm,ReviewForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render,redirect
@@ -126,6 +126,7 @@ def index(request):
             context={'num_genres':num_genres, 'num_games':num_games,'num_tags':num_tags}
             )
 
+
 class GenreListView(generic.ListView):
     model = Genre
     paginate_by = 10
@@ -136,7 +137,6 @@ class GenreListView(generic.ListView):
 
 class GenreDetailView(generic.DetailView):
     model = Genre
-
 
 
 class TagListView(generic.ListView):
@@ -150,7 +150,7 @@ class TagListView(generic.ListView):
 class TagDetailView(generic.DetailView):
     model = Tag
 
-class RewardDetailView(generic.DetailView):
+class RewardDetailView(LoginRequiredMixin,generic.DetailView):
     model = Reward
 
 class GameListView(generic.ListView):
@@ -164,7 +164,7 @@ class GameListView(generic.ListView):
 class GameDetailView(generic.DetailView):
     model = Game
 
-class TransactionListView(generic.ListView):
+class TransactionListView(LoginRequiredMixin,generic.ListView):
     model = Transaction
     paginate_by = 10
     def get_context_data(self, **kwargs):
@@ -172,7 +172,7 @@ class TransactionListView(generic.ListView):
         context['some_data'] = 'This is just some data'
         return context
 
-class TransactionDetailView(generic.DetailView):
+class TransactionDetailView(LoginRequiredMixin,generic.DetailView):
     model = Transaction
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -205,9 +205,9 @@ from django.urls import reverse_lazy
 
 
 
-class TransactionCreate(CreateView):
+class TransactionCreate(LoginRequiredMixin,CreateView):
     model = Transaction
-    fields = ['game','num_reward']
+    form_class = TransactionForm
     def form_valid(self, form):
         form.instance.buyer = self.request.user
         num=form.instance.num_reward
@@ -219,17 +219,13 @@ class TransactionCreate(CreateView):
         Reward.use_reward(self.request.user,self.object.num_reward,self.object)            
         Reward.update_reward(self.request.user)
         return reverse('index')
-       
+    def get_form_kwargs(self, *args, **kwargs):
+        form_kwargs = super(TransactionCreate, self).get_form_kwargs(*args, **kwargs)
+        form_kwargs['owner'] = self.request.user
+        return form_kwargs
 
-class TransactionUpdate(UpdateView):
-    model = Transaction
-    fields = '__all__'
 
-class TransactionDelete(DeleteView):
-    model = Transaction
-    success_url = reverse_lazy('transactions')
-
-class TagCreate(CreateView):
+class TagCreate(LoginRequiredMixin,CreateView):
     model = Tag
     form_class = TagForm
     def form_valid(self, form):
@@ -242,6 +238,79 @@ class TagCreate(CreateView):
         form_kwargs = super(TagCreate, self).get_form_kwargs(*args, **kwargs)
         form_kwargs['owner'] = self.request.user
         return form_kwargs
+
+
+
+
+
+
+class TransactionSingleCreate(LoginRequiredMixin,CreateView):
+    model = Transaction
+    form_class = TransactionSingleForm
+    def form_valid(self, form):
+        form.instance.buyer = self.request.user
+        # form.instance.game =  Game.objects.get(id=self.kwargs['id'])
+        num=form.instance.num_reward
+        if num <0 or num >10 or  not Reward.check_num(self.request.user,num):
+            raise ValidationError("Error in reward number")
+            return self.form_invalid(form)
+        if Game.objects.filter(transaction__buyer=self.request.user,id=self.kwargs['id']).count()>0:
+            raise ValidationError("This Game has been bought!")
+            return self.form_invalid(form)
+        self.kwargs['id'] 
+        return super(TransactionSingleCreate, self).form_valid(form)
+    def get_success_url(self):
+        trans=Transaction.objects.filter(id=self.object.id)    
+        trans[0].game=Game.objects.filter(id=self.kwargs['id'])
+        Reward.use_reward(self.request.user,self.object.num_reward,self.object)            
+        Reward.update_reward(self.request.user)
+        return reverse('index')
+
+
+class TagSingleCreate(LoginRequiredMixin,CreateView):
+    model = Tag
+    form_class = TagSingleForm
+    def form_valid(self, form):
+        # if not Tag.check_unique(form.instance.name):
+        if Tag.objects.filter(name__iexact=form.instance.name, game__id = self.kwargs['id']).count()>0:
+            raise ValidationError("This tag has been Created")
+            return self.form_invalid(form)
+        if Game.objects.filter(transaction__buyer=self.request.user,id=self.kwargs['id']).count()==0:
+            raise ValidationError("This Game has been not bought so you cannot add tag!")
+            return self.form_invalid(form)
+        form.instance.owner = self.request.user
+        return super(TagSingleCreate, self).form_valid(form)
+    def get_success_url(self):
+        tags=Tag.objects.filter(id=self.object.id)
+        tags[0].game=Game.objects.filter(id=self.kwargs['id'])
+        return reverse('index')
+
+class ReviewCreate(LoginRequiredMixin,CreateView):
+    model = Review
+    form_class = ReviewForm
+    def form_valid(self, form):
+        if Game.objects.filter(transaction__buyer=self.request.user,id=self.kwargs['id'])==0:
+            raise ValidationError("This Game has been not bought so you cannot add review!")
+            return self.form_invalid(form)
+        form.instance.owner = self.request.user
+        return super(ReviewCreate, self).form_valid(form)
+    def get_success_url(self):
+        rev=Review.objects.filter(id=self.object.id)
+        print self.kwargs['id']
+        print Game.objects.filter(id=self.kwargs['id'])[0].name
+        rev[0].game=Game.objects.filter(id=self.kwargs['id'])[0]
+        return reverse('index')
+
+
+class TransactionUpdate(UpdateView):
+    model = Transaction
+    fields = '__all__'
+
+class TransactionDelete(DeleteView):
+    model = Transaction
+    success_url = reverse_lazy('transactions')
+
+
 
 class TagUpdate(UpdateView):
     model = Tag

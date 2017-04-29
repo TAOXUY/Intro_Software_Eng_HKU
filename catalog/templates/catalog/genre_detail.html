@@ -1,11 +1,11 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-  <h1>Name: {{ genre.name }}</h1>
+  <h1>Genre Name: {{ genre.name }}</h1>
 
  
 
-  <p><strong>Games in This Type:</strong> 
+  <p><strong>Games in This Genre:</strong> 
 
   {% for g in genre.game_set.all %} 
       <li>

@@ -6,6 +6,7 @@
 
   <p><strong>Descirption:</strong> {{ game.description }}</p> 
   <p><strong>Price:</strong> {{ game.price }}</p>  
+  <strong>Image:<img src="{{ game.picture.url }}"/></strong> <br></br>
   <p><strong>Platform:</strong> 
 
   {% for p in game.platform.all %} 
@@ -18,6 +19,8 @@
   {% if not forloop.last %},
    {% endif %}
    {% endfor %}</p>  
+
+
 
  <div style="margin-left:20px;margin-top:20px">
     <h4>Its tages</h4>
@@ -33,7 +36,17 @@
     {% endfor %}
   </div>
 
+<script type="text/javascript"></script>>
+{% if user.is_authenticated %}
 
+
+
+
+
+<li><a href="{{ game.get_purchase_url }}">Buy It!!!</a>
+<li><a href="{{ game.get_addTag_url }}">Add Tag</a>
+<!-- <li><a href="{{ game.get_addReview_url }}">Add Review</a> -->
+{% endif %}     
 
   <div style="margin-left:20px;margin-top:20px">
     <h4>Sold in Transactions</h4>
