@@ -4,10 +4,10 @@ from django.shortcuts import render
 import uuid
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic
-from .models import Genre,Game,Transaction, Tag, Reward,Document,Review
+from .models import Genre,Game,Transaction, Tag, Reward
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
-from .forms import SignUpForm, EditProfileForm, TransactionForm,TransactionSingleForm,RewardFormSet ,RewardForm,DocumentForm,TagForm,TagSingleForm,ReviewForm
+from .forms import SignUpForm, EditProfileForm, TransactionForm,TransactionSingleForm,RewardFormSet ,RewardForm,TagForm,TagSingleForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render,redirect
@@ -22,21 +22,21 @@ from django.views.generic import TemplateView
 from django.forms.models import inlineformset_factory
 from django.core.exceptions import ValidationError
 
-def display_document(request, id):
-    image = Document.objects.get(id=id)
-    return render(request, 'catalog/display_document.html', {'image': image})
+# def display_document(request, id):
+#     image = Document.objects.get(id=id)
+#     return render(request, 'catalog/display_document.html', {'image': image})
 
-def model_form_upload(request):
-    if request.method == 'POST':
-        form = DocumentForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('index')
-    else:
-        form = DocumentForm()
-    return render(request, 'catalog/model_form_upload.html', {
-        'form': form
-    })
+# def model_form_upload(request):
+#     if request.method == 'POST':
+#         form = DocumentForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('index')
+#     else:
+#         form = DocumentForm()
+#     return render(request, 'catalog/model_form_upload.html', {
+#         'form': form
+#     })
 
 def profile(request):
     if request.user.is_authenticated():
@@ -285,19 +285,19 @@ class TagSingleCreate(LoginRequiredMixin,CreateView):
         Tag.objects.filter(name=self.object.name).exclude(id=self.object.id,).delete()
         return reverse('index')
 
-class ReviewCreate(LoginRequiredMixin,CreateView):
-    model = Review
-    form_class = ReviewForm
-    def form_valid(self, form):
-        if Game.objects.filter(transaction__buyer=self.request.user,id=self.kwargs['id'])==0:
-            raise ValidationError("This Game has been not bought so you cannot add review!")
-            return self.form_invalid(form)
-        form.instance.owner = self.request.user
-        return super(ReviewCreate, self).form_valid(form)
-    def get_success_url(self):
-        rev=Review.objects.filter(id=self.object.id)
-        rev[0].game=Game.objects.filter(id=self.kwargs['id'])[0]
-        return reverse('index')
+# class ReviewCreate(LoginRequiredMixin,CreateView):
+#     model = Review
+#     form_class = ReviewForm
+#     def form_valid(self, form):
+#         if Game.objects.filter(transaction__buyer=self.request.user,id=self.kwargs['id'])==0:
+#             raise ValidationError("This Game has been not bought so you cannot add review!")
+#             return self.form_invalid(form)
+#         form.instance.owner = self.request.user
+#         return super(ReviewCreate, self).form_valid(form)
+#     def get_success_url(self):
+#         rev=Review.objects.filter(id=self.object.id)
+#         rev[0].game=Game.objects.filter(id=self.kwargs['id'])[0]
+#         return reverse('index')
 
 
 class TransactionUpdate(UpdateView):

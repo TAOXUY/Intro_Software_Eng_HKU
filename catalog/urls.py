@@ -7,8 +7,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
 url(r'^profile/$', views.profile, name='profile'),
-url(r'^upload/$', views.model_form_upload, name='uploaldImage'),
-url(r'^display/(?P<id>\d+)$', views.display_document, name='displayImage'),
+# url(r'^upload/$', views.model_form_upload, name='uploaldImage'),
+# url(r'^display/(?P<id>\d+)$', views.display_document, name='displayImage'),
 # url(r'^profile/edit/$', views.edit_profile, name='edit_profile'),
 url(r'^$', views.index, name='index'),
 url(r'^genres/$', views.GenreListView.as_view(), name='genres'),
@@ -32,7 +32,7 @@ url(r'^myrewards/$', views.OwnedRewardsByUserListView.as_view(), name='my-reward
 urlpatterns += [  
 url(r'^game/(?P<id>\d+)/purchase/$', views.TransactionSingleCreate.as_view(), name='game-purchase'),
 url(r'^game/(?P<id>\d+)/addTag/$', views.TagSingleCreate.as_view(), name='game-addTag'),
-url(r'^game/(?P<id>\d+)/addReview/$', views.ReviewCreate.as_view(), name='game-addReview'),
+# url(r'^game/(?P<id>\d+)/addReview/$', views.ReviewCreate.as_view(), name='game-addReview'),
 url(r'^transaction/create/$', views.TransactionCreate.as_view(),name='transaction-create',),
 url(r'^transaction/(?P<pk>\d+)/update/$', views.TransactionUpdate.as_view(), name='transaction-update'),
 url(r'^transaction/(?P<pk>\d+)/delete/$', views.TransactionDelete.as_view(), name='transaction-delete'),

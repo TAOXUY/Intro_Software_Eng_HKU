@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.admin import UserAdmin
 # Register your models here.
-from .models import  Genre, Game, Transaction,Tag, Reward,Platform, Document,Review
+from .models import  Genre, Game, Transaction,Tag, Reward,Platform
 
 #admin.site.register(Genre)
 #admin.site.register(Game)
@@ -29,14 +29,14 @@ class GamesInline(admin.TabularInline):
 
 # Register the Admin classes for BookInstance using the decorator
 
-@admin.register(Document)
-class DocumentAdmin(admin.ModelAdmin):
-    list_display = ('id','description','document','uploaded_at')
+# @admin.register(Document)
+# class DocumentAdmin(admin.ModelAdmin):
+#     list_display = ('id','description','document','uploaded_at')
 
 
-@admin.register(Review)
-class DocumentAdmin(admin.ModelAdmin):
-    list_display = ('id','content','game','owner')
+# @admin.register(Review)
+# class DocumentAdmin(admin.ModelAdmin):
+#     list_display = ('id','content','game','owner')
 
 @admin.register(Game)
 class GameAdmin(admin.ModelAdmin):

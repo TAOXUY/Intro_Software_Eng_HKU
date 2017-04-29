@@ -45,8 +45,8 @@ class Game(models.Model):
         return reverse('game-purchase', args=[str(self.id)])
     def get_addTag_url(self):
         return reverse('game-addTag', args=[str(self.id)])
-    def get_addReview_url(self):
-        return reverse('game-addReview', args=[str(self.id)])
+    # def get_addReview_url(self):
+    #     return reverse('game-addReview', args=[str(self.id)])
     def get_absolute_url(self):
         return reverse('game-detail', args=[str(self.id)])
     def display_platform(self):
@@ -59,12 +59,12 @@ class Game(models.Model):
         return ', '.join([ tag.name for tag in self.tag_set.all()[:3] ])
         display_tag.short_description = 'Tag'
 
-class Review(models.Model):
-    content = models.CharField(max_length=1000)
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    game = models.ForeignKey(Game, on_delete=models.SET_NULL, null=True, blank=True)
-    def __str__(self):
-        return self.id
+# class Review(models.Model):
+#     content = models.CharField(max_length=1000)
+#     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+#     game = models.ForeignKey(Game, on_delete=models.SET_NULL, null=True, blank=True)
+#     def __str__(self):
+#         return self.id
 
 class Tag(models.Model):
     name = models.CharField(max_length=200, help_text="Enter a game tag(e.g. Excellent, Funny.)")
@@ -143,9 +143,9 @@ class Reward(models.Model):
             gift = Reward( owner=user)
             gift.save()
 
-class Document(models.Model):
-    description = models.CharField(max_length=255, blank=True)
-    document = models.FileField(upload_to='documents/')
-    uploaded_at = models.DateTimeField(auto_now_add=True)
+# class Document(models.Model):
+#     description = models.CharField(max_length=255, blank=True)
+#     document = models.FileField(upload_to='documents/')
+#     uploaded_at = models.DateTimeField(auto_now_add=True)
 
 
