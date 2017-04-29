@@ -4,10 +4,13 @@
   <h1>Name: {{ game.name }}</h1>
 
 
-  <p><strong>Descirption:</strong> {{ game.description }}</p>
-    <p><strong>Platform:</strong> {{ game.platform }}</p>  
+  <p><strong>Descirption:</strong> {{ game.description }}</p> 
   <p><strong>Price:</strong> {{ game.price }}</p>  
+  <p><strong>Platform:</strong> 
 
+  {% for p in game.platform.all %} 
+  {{ p.name }}
+   {% endfor %}</p>  
   <p><strong>Genre:</strong> 
 
   {% for genre in game.genre.all %} 

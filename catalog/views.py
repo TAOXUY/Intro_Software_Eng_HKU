@@ -91,10 +91,19 @@ def index(request):
         if num_visits==1:
             gift = Reward( owner=request.user)
             gift.save()
+        Reward.update_reward(request.user)
         return render(
             request,
             'index.html',
-            context={ 'num_visits':num_visits,'num_genres':num_genres, 'num_games':num_games,'num_tags':num_tags,'games_rcmd':Game.objects.filter(tag__game__transaction__buyer=request.user).distinct().exclude(transaction__buyer=request.user).distinct()[:3],'accumulated_amount':sum([game.price for game in Game.objects.filter(transaction__buyer=request.user)])}
+            context={ 'num_visits':num_visits,
+            'num_genres':num_genres, 
+            'num_games':num_games,
+            'num_tags':num_tags,
+            'games_rcmd':Game.objects.filter(tag__game__transaction__buyer=request.user).distinct().exclude(transaction__buyer=request.user).distinct()[:3],
+            'till_next_reward_amount':100-(sum([t.display_trading_price() for t in Transaction.objects.filter(buyer=request.user)])-100*(Reward.objects.filter(owner=request.user).count()-1)),
+            'rewards':Reward.objects.filter(owner=request.user),
+            'featured_games':Game.objects.filter(featured=True)
+            }
             )
     return render(
         	request,
@@ -191,7 +200,8 @@ class TransactionCreate(CreateView):
             return self.form_invalid(form)
         return super(TransactionCreate, self).form_valid(form)
     def get_success_url(self):
-        Reward.use_reward(self.request.user,self.object.num_reward,self.object)
+        Reward.use_reward(self.request.user,self.object.num_reward,self.object)            
+        Reward.update_reward(self.request.user)
         return reverse('index')
        
 

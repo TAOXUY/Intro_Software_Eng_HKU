@@ -13,16 +13,57 @@
 	<li><strong>Tags:</strong> {{ num_tags }}</li>
 	{% if user.is_authenticated %}
 <!-- 	<li><strong>Login Times:</strong> {{ num_visits }}</li>
- -->	<li><strong>Accumulated Amount:</strong> {{ 	accumulated_amount }}</li>
+-->	<li><strong>Till Next Award:</strong> {{ 	till_next_reward_amount }}</li>
 
-	<li><strong>RECOMMENDATION:</strong> </li>
-	{% for game in games_rcmd.all %}
-	<li> <a href="{{ game.get_absolute_url }}">{{ game.name }}</a> </li>
+<li><strong>RECOMMENDED GAMES:</strong> </li>
+
+{% for game in games_rcmd.all %}
+<li> <a href="{{ game.get_absolute_url }}">{{ game.name }}</a> </li>
 
 
-	{% endfor %}
+{% endfor %}
+<br></br>
+<li><strong>FEATURED GAMES:</strong> </li>
+{% for fg in featured_games.all %} 
+<strong>Game Image:{{fg.name}}</strong> <br></br>
+<strong>Game Title:{{fg.name}}</strong> <br></br>
+<strong>Game Description:{{fg.description}}</strong> <br></br>
+<p> <strong> Game Platform:{% for p in fg.platform.all %} 
+  {{ p.name }}
+   {% endfor %}</strong></p>  
+<p> <strong> Game Genre:{% for g in fg.genre.all %} 
+  {{ g.name }}
+   {% endfor %}</strong></p>  
+<strong>Game Price:{{fg.price}}</strong> <br></br>
+{% endfor %}</p>  
 
-	{% endif %} 
+<p><strong>Reward Info:</strong> </p>
+<script>
+	var index = 1;
+</script>
+
+
+{% for reward in rewards.all %} 
+
+<h1>NO. <script>
+	document.write(index);
+</script> Reward</h1>
+Assigned Date:{{reward.date}}<br></br>
+Due Date:{{reward.due_date}}<br></br>
+Status:{{reward.status}}<br></br>
+<script>
+	index = index+1;
+</script>
+{% endfor %}</p>  
+
+
+
+
+
+{% endif %} 
+
+
+
 
 </ul>
 

@@ -36,6 +36,7 @@ class Game(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(max_length=1000, help_text="Enter a brief description of the game")
     price= models.DecimalField(max_digits=5, decimal_places=2)
+    featured=models.BooleanField(default=False)
     def __str__(self):
         return self.name    
     def get_absolute_url(self):
@@ -120,7 +121,11 @@ class Reward(models.Model):
                     j.transaction=trans
                     j.save()
                     tmpt=tmpt+1
-
+    @staticmethod               
+    def update_reward(user):
+        while sum([t.display_trading_price() for t in Transaction.objects.filter(buyer=user)])-100*(Reward.objects.filter(owner=user).count()-1)>100:
+            gift = Reward( owner=user)
+            gift.save()
 
 
 

@@ -33,7 +33,7 @@ class GamesInline(admin.TabularInline):
 
 @admin.register(Game)
 class GameAdmin(admin.ModelAdmin):
-    list_display = ('id','name', 'display_platform','description','display_genre','display_tag','price')
+    list_display = ('id','name','featured', 'display_platform','description','display_genre','display_tag','price')
 
 
 @admin.register(Transaction)
